@@ -21,10 +21,10 @@
     "url": "https://github.com/nextapps-de/spotlight.git"
   },
   "scripts": {
-    "copy": "cpx \"src/img/*.*\" dist/img/",
-    "clean": "if exist dist rmdir dist /s /q && mkdir dist",
-    "build:css": "lessc --autoprefix=\">=1%\" --clean-css=\"--s1 --advanced --rebase\" src/css/spotlight.less dist/css/spotlight.css && csso dist/css/spotlight.css --output dist/css/spotlight.css",
-    "build:css:bundle": "cpx \"src/css/spotlight.less\" tmp/ && lessc --autoprefix=\">=1%\" --clean-css=\"--s1 --advanced --rebase\" tmp/spotlight.less tmp/spotlight.css && csso tmp/spotlight.css --output tmp/spotlight.css",
+    "copy": "cp -r src/img dist/img",
+    "clean": "rm -rf dist && mkdir dist && rm -rf tmp && mkdir tmp",
+    "build:css": "./node_modules/less/bin/lessc --autoprefix=\">=1%\" --clean-css=\"--s1 --advanced --rebase\" src/css/spotlight.less dist/css/spotlight.css && csso dist/css/spotlight.css --output dist/css/spotlight.css",
+    "build:css:bundle": "cp \"src/css/spotlight.less\" tmp/ && ./node_modules/less/bin/lessc --autoprefix=\">=1%\" --clean-css=\"--s1 --advanced --rebase\" tmp/spotlight.less tmp/spotlight.css && csso tmp/spotlight.css --output tmp/spotlight.css",
     "build:js": "node task/build",
     "build:bundle": "node task/build --bundle",
     "build:extern": "node task/build --extern",

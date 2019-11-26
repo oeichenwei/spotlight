@@ -668,6 +668,9 @@ export function play(init){
 
 function autohide(){
 
+    if (!options["menu"])
+        return;
+        
     if(hide){
 
         clearTimeout(hide);

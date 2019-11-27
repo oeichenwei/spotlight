@@ -668,7 +668,7 @@ export function play(init){
 
 function autohide(){
 
-    if (!options["menu"])
+    if (!options["menu"] || options["menu"] === false)
         return;
         
     if(hide){
@@ -717,6 +717,19 @@ export function menu(e){
     return cancelEvent(e);
 }
 
+export function dragStart(evt) {
+    start(evt);
+}
+
+export function dragMove(evt) {
+    move(evt);
+    return draggable && (x < -(viewportH / 3) || (x > viewportH / 3));
+}
+
+export function dragEnd(evt) {
+    end(evt);
+}
+
 function start(e){
 
     is_down = true;
@@ -744,15 +757,10 @@ function end(e){
         update_slider(true, x / viewportW * 100);
 
         if((x < -(viewportH / 10)) && next()){
-
-
         }
         else if((x > viewportH / 10) && prev()){
-
-
         }
         else{
-
             update_slider();
         }
 
@@ -781,7 +789,6 @@ function move(e){
         x -= startX - (startX = touch.x);
 
         if(!draggable){
-
             if(x > diff){
 
                 x = diff;
@@ -1026,28 +1033,26 @@ export function close(hashchange){
 export function prev(){
 
     if(current_slide > 1){
-
-        return goto(current_slide - 1);
+        return goto(current_slide - 1, false);
     }
     else if(playing || options_infinite){
-
-        return goto(slide_count);
+        prepareStyle(slider, "transform", "translateX(-" + slide_count * 100 + "%)");
+        return goto(slide_count, false);
     }
 }
 
 export function next(){
 
-    if(current_slide < slide_count){
-
-        return goto(current_slide + 1);
+    if(current_slide < slide_count) {
+        return goto(current_slide + 1, true);
     }
-    else if(playing || options_infinite){
-
-        return goto(1);
+    else if(playing || options_infinite) {
+        prepareStyle(slider, "transform", "translateX(100%)");
+        return goto(1, true);
     }
 }
 
-export function goto(slide){
+export function goto(slide, dir){
 
     if(!playing || !is_down){
 
@@ -1060,7 +1065,8 @@ export function goto(slide){
                 animate_bar();
             }
 
-            const dir = slide > current_slide;
+            if (dir === undefined)
+                dir = slide > current_slide;
 
             current_slide = slide;
             paginate(dir);
@@ -1147,7 +1153,7 @@ function paginate(direction){
 
             const effect = effects[i].trim();
 
-                 if(effect === "scale") animation_scale = true;
+            if(effect === "scale") animation_scale = true;
             else if(effect === "fade") animation_fade = true;
             else if(effect === "slide") animation_slide = true;
             else if(effect === "flip") animation_flip = true;
@@ -1168,8 +1174,7 @@ function paginate(direction){
     update_slider();
 
     if(panel){
-
-        update_panel();
+       update_panel();
     }
 
     if(image){
@@ -1294,5 +1299,8 @@ export default {
     "zoom": zoom,
     "menu": menu,
     "show": show,
-    "play": play
+    "play": play,
+    "dragStart": dragStart,
+    "dragMove": dragMove,
+    "dragEnd": dragEnd
 };
